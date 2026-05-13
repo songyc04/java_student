@@ -20,9 +20,13 @@ class Student {
         this.gender = null;
         this.contact = null;
     }
-    public Student(String s_name, int graduatedId) {
+    public Student(String s_name, int graduatedId, Student student) {
         this.name = s_name;
         this.id = Integer.toString(graduatedId);
+        this.grades = student.getGrades();
+        this.age = student.getAge();
+        this.gender = student.getGender();
+        this.contact = student.getContact();
     }
     public void setName(String s_name) {
         this.name = s_name;
@@ -84,8 +88,8 @@ class Graduated extends Student {
     private String labName;
     private String advisor;
 
-    public Graduated(String s_name, String s_labName, String s_advisor) {
-        super(s_name, ++graduatedId);
+    public Graduated(String s_name, String s_labName, String s_advisor, Student student) {
+        super(s_name, ++graduatedId, student);
         this.labName = s_labName;
         this.advisor = s_advisor;
     }
@@ -195,7 +199,7 @@ public class Project {
                             System.out.print("등록할 대학원생의 지도교수 성명을 입력해주세요: ");
                             String advisor = sc.nextLine();
 
-                            Graduated graduated = new Graduated(selectedStudent.getName(), labName, advisor);
+                            Graduated graduated = new Graduated(selectedStudent.getName(), labName, advisor, selectedStudent);
                             graduatedList.add(graduated);
 
                             // Graduated graduated = new Graduated(selectedStudent.getName(), labName, advisor);
