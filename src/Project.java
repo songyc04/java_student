@@ -206,6 +206,7 @@ public class Project {
                                 if (id.equals(student.getId()))
                                 {
                                     studentList.remove(student);
+                                    break;
                                 }
                             }
 
