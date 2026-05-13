@@ -77,13 +77,48 @@ class Student {
 }
 
 class Graduated extends Student {
-    
+    private String labName;
+    private String advisor;
+
+    public Graduated(String s_name, String s_labName, String s_advisor) {
+        super(s_name);
+        this.labName = s_labName;
+        this.advisor = s_advisor;
+    }
+
+    public void setLabName(String s_labName) {
+        this.labName = s_labName;
+    }
+    public void setAdvisor(String s_advisor) {
+        this.advisor = s_advisor;
+    }
+
+    public void copyInfo() {
+
+    }
+
+    public String getLabName() {
+        return this.labName;
+    }
+    public String getAdvisor() {
+        return this.advisor;
+    }
+
+
+    @Override
+    public void getAllInfo() {
+        System.out.println("아래 학생은 대학원생입니다.");
+        super.getAllInfo();
+        System.out.printf("연구실: %s\n", this.labName);
+        System.out.printf("지도교수: %s 교수\n", this.advisor);
+    }
 }
 
 public class Project {
     public static void main(String[] args) throws Exception {
         System.out.println("=== 학생 관리 시스템 ===");
         ArrayList<Student> studentList = new ArrayList<>();
+        ArrayList<Graduated> graduatedList = new ArrayList<>();
         Scanner sc = new Scanner(System.in);
 
         while (true)
@@ -101,20 +136,94 @@ public class Project {
             }
             else if (menu.equals("1"))  // 학생 등록
             {
-                System.out.print("등록하시려면 학생 이름을, 등록을 취소하시려면 0을 입력해주세요: ");
-                String s_name = sc.nextLine();
-                if (s_name.equals("0"))
+                System.out.print("일반 대학생을 등록하려면 1, 대학원생을 등록하려면 2를 입력해주세요: ");
+                String mode = sc.nextLine();
+
+                if (mode.equals("1"))
                 {
-                    System.out.println("학생 등록을 취소합니다. 작업 선택 화면으로 이동합니다.");
-                    System.out.printf("================================================\n\n");
-                    continue;
+                    System.out.printf("등록하시려면 학생 이름을, 등록을 취소하시려면 0을 입력해주세요: ");
+                    String s_name = sc.nextLine();
+                    if (s_name.equals("0"))
+                    {
+                        System.out.println("학생 등록을 취소합니다. 작업 선택 화면으로 이동합니다.");
+                        System.out.printf("================================================\n\n");
+                        continue;
+                    }
+                    else
+                    {
+                        Student stu01 = new Student(s_name);
+                        System.out.printf("%s 학생이 등록되었습니다.\n", stu01.getName());
+                        studentList.add(stu01);
+                    }
+                }
+                else if (mode.equals("2"))
+                {
+                    if (studentList.size() == 0)
+                    {
+                        System.out.println("등록된 학생이 없어 대학원생을 등록할 수 없습니다. 작업 선택 화면으로 이동합니다.");
+                        System.out.printf("================================================\n\n");
+                    }
+                    else
+                    {
+                        System.out.printf("등록된 학생은 %d명입니다. 대학원생으로 등록할 학생의 학번을 입력해주세요. 학번은 2601-- 형식입니다: ", studentList.size());
+                        String id = sc.nextLine();
+                        Student selectedStudent = null;
+
+                        for (Student student: studentList)
+                        {
+                            if (id.equals(student.getId()))
+                            {
+                                selectedStudent = student;
+                                System.out.printf("%s 학번의 학생을 찾았습니다. 대학원 정보 입력으로 이동합니다.\n", selectedStudent.getId());
+                                break;
+                            }
+                        }
+
+                        if (selectedStudent == null)
+                        {
+                            System.out.printf("%s 학번의 학생이 없습니다. 작업 선택 화면으로 이동합니다.\n", id);
+                            System.out.printf("================================================\n\n");
+                        }
+                        else
+                        {
+                            System.out.print("등록할 대학원생의 연구실 이름을 입력해주세요: ");
+                            String labName = sc.nextLine();
+                            System.out.print("등록할 대학원생의 지도교수 성명을 입력해주세요: ");
+                            String advisor = sc.nextLine();
+
+                            Graduated graduated = new Graduated(selectedStudent.getName(), labName, advisor);
+                            graduatedList.add(graduated);
+
+                            // Graduated graduated = new Graduated(selectedStudent.getName(), labName, advisor);
+                            // graduatedList.add(graduated);
+                            
+                            graduated.getAllInfo();
+                            System.out.println("대학원생이 정상적으로 등록되었습니다. 작업 선택 화면으로 이동합니다.");
+                            System.out.printf("================================================\n\n");
+
+                            for (Student student: studentList)
+                            {
+                                if (id.equals(student.getId()))
+                                {
+                                    studentList.remove(student);
+                                }
+                            }
+
+                            continue;
+                        }
+
+
+                    }
                 }
                 else
                 {
-                    Student stu01 = new Student(s_name);
-                    System.out.printf("%s 학생이 등록되었습니다.\n", stu01.getName());
-                    studentList.add(stu01);
+                    System.out.println("잘못된 선택 입력입니다. 작업 선택 화면으로 이동합니다.");
+                    System.out.printf("================================================\n\n");
+                    continue;
                 }
+
+
+                
 
             }
             else if (menu.equals("2"))  // 학생 세부정보 등록/수정
@@ -288,11 +397,34 @@ public class Project {
             else if (menu.equals("4"))  // 전체 학생 조회
             {
                 System.out.printf("전체 학생의 정보를 조회합니다. 등록된 학생은 총 %d명입니다.\n", studentList.size());
-                for (Student s: studentList)
+                System.out.println("=== 일반 대학생 정보 ===");
+                if (studentList.size() != 0)
                 {
-                    System.out.printf("*** %d번 학생 정보 ***\n", studentList.indexOf(s) + 1);
-                    s.getAllInfo();
+                    for (Student s: studentList)
+                    {
+                        System.out.printf("*** %d번 학생 정보 ***\n", studentList.indexOf(s) + 1);
+                        s.getAllInfo();
+                    }
                 }
+                else
+                {
+                    System.out.println("일반 대학생이 없습니다.");
+                }
+
+                System.out.println("=== 대학원생 정보 ===");
+                if (graduatedList.size() != 0)
+                {
+                    for (Graduated s: graduatedList)
+                    {
+                        System.out.printf("*** %d번 학생 정보 ***\n", graduatedList.indexOf(s) + 1);
+                        s.getAllInfo();
+                    }
+                }
+                else
+                {
+                    System.out.println("대학원생이 없습니다.");
+                }
+                
             }
             else                                 // 오입력 제어
             {
