@@ -19,7 +19,10 @@ class Student {
         this.age = 0;
         this.gender = null;
         this.contact = null;
-
+    }
+    public Student(String s_name, int graduatedId) {
+        this.name = s_name;
+        this.id = Integer.toString(graduatedId);
     }
     public void setName(String s_name) {
         this.name = s_name;
@@ -77,11 +80,12 @@ class Student {
 }
 
 class Graduated extends Student {
+    private static int graduatedId = 261100;
     private String labName;
     private String advisor;
 
     public Graduated(String s_name, String s_labName, String s_advisor) {
-        super(s_name);
+        super(s_name, ++graduatedId);
         this.labName = s_labName;
         this.advisor = s_advisor;
     }
